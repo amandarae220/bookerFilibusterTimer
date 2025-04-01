@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cory Booker's Filibuster Timer</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Raleway:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-color: #f4f4f4;
+      --text-color: #222;
+      --accent-color: #a33;
+    }
+
+    body.dark-mode {
+      --bg-color: #121212;
+      --text-color: #f1f1f1;
+      --accent-color: #ff6b6b;
+    }
+
+    body {
+      font-family: 'Raleway', sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+      text-align: center;
+      padding: 2rem;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      margin-bottom: 0.5rem;
+      font-size: 2rem;
+    }
+
+    .timer, .countdown {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      display: inline-block;
+      overflow: hidden;
+    }
+
+    .digit-roll {
+      display: inline-block;
+      transition: transform 0.5s ease-in-out;
+      will-change: transform;
+    }
+
+    .countdown {
+      font-size: 1.25rem;
+      color: var(--accent-color);
+    }
+
+    iframe {
+      width: 100%;
+      height: 400px;
+      margin-top: 30px;
+      border-radius: 8px;
+      border: none;
+    }
+
+    .theme-toggle {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      background-color: var(--accent-color);
+      color: #fff;
+      transition: background 0.3s ease;
+    }
+
+    div.timer {
+        display: block;
+        margin-top: 1rem;
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 1.6rem;
+      }
+
+      .timer, .countdown {
+        font-size: 1.25rem;
+      }
+
+      iframe {
+        height: 300px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 1rem;
+      }
+
+      h1 {
+        font-size: 1.4rem;
+      }
+
+      .timer, .countdown {
+        font-size: 1rem;
+      }
+
+      iframe {
+        height: 250px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Cory Booker's Filibuster Timer</h1>
+  <div class="timer" id="elapsed"></div>
+  <div class="countdown" id="countdown"></div>
+
+  <!-- Embedded YouTube Livestream -->
+  <iframe 
+    src="https://www.youtube.com/embed/-tQnm19ZTD0" 
+    title="Cory Booker Livestream" 
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+    allowfullscreen>
+  </iframe>
+
+  <!-- Light/Dark Mode Toggle Button -->
+  <button class="theme-toggle" onclick="toggleTheme()">Toggle Light/Dark Mode</button>
+
+  <script>
+    const startTime = new Date('March 31, 2025 19:00:00 EDT').getTime();
+    const recordDuration = 24 * 60 * 60 * 1000 + 18 * 60 * 1000; // 24h 18m in ms
+    const recordTime = startTime + recordDuration;
+
+    function formatTime(hours, minutes, seconds) {
+      return `
+        <span class="digit-roll">${hours}</span>h 
+        <span class="digit-roll">${minutes}</span>m 
+        <span class="digit-roll">${seconds}</span>s`;
+    }
+
+    function updateTimers() {
+      const now = new Date().getTime();
+      const elapsed = now - startTime;
+      const remaining = recordTime - now;
+
+      const elapsedHours = Math.floor(elapsed / (1000 * 60 * 60));
+      const elapsedMinutes = Math.floor((elapsed % (1000 * 60 * 60)) / (1000 * 60));
+      const elapsedSeconds = Math.floor((elapsed % (1000 * 60)) / 1000);
+
+      const remainingHours = Math.floor(remaining / (1000 * 60 * 60));
+      const remainingMinutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+      const remainingSeconds = Math.floor((remaining % (1000 * 60)) / 1000);
+
+      document.getElementById("elapsed").innerHTML = `Elapsed Time: ` + formatTime(elapsedHours, elapsedMinutes, elapsedSeconds);
+
+      if (remaining > 0) {
+        document.getElementById("countdown").innerHTML = `Time to Break Record: ` + formatTime(remainingHours, remainingMinutes, remainingSeconds);
+      } else {
+        document.getElementById("countdown").innerHTML = `🎉 Record broken! Total time: ` + formatTime(elapsedHours, elapsedMinutes, elapsedSeconds);
+      }
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle("dark-mode");
+    }
+
+    updateTimers();
+    setInterval(updateTimers, 1000);
+  </script>
+</body>
+</html>
